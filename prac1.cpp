@@ -58,25 +58,27 @@ void runner(int num){
     bubbleSort(arr, arr.size());
     endTime = clock();
 
+    cout<<num;
     totalTime = ((double)(endTime - startTime)) / CLOCKS_PER_SEC;
-    cout<<"Bubble Sort Time: "<<totalTime<<endl;
+    cout<<"        "<<totalTime;
     
     startTime = clock();
     selectionSort(arr, arr.size());
     endTime = clock();
 
     totalTime = ((double)(endTime - startTime)) / CLOCKS_PER_SEC;
-    cout<<"Selection Sort Time: "<<totalTime<<endl;
+    cout<<"             "<<totalTime<<endl;
 
 }
 
 int main(){
-
+    cout<<"        Bubble Sort      Selection Sort"<<endl;
+    runner(500);
     runner(1000);
+    runner(1500);
     runner(2000);
-    runner(5000);
-    runner(7500);
-    runner(9000);
+    runner(2500);
+    runner(3000);
     
     return 0;
 }
