@@ -39,8 +39,8 @@ void randomNums(int n){
 
 }
 
-void runner(){
-    randomNums(13); // put number of numbers to generate
+void runner(int num){
+    randomNums(num); // put number of numbers to generate
 
     clock_t startTime, endTime;
     double totalTime;
@@ -72,10 +72,11 @@ void runner(){
 
 int main(){
 
-    runner();
-    runner();
-    runner();
-    runner();
+    runner(1000);
+    runner(2000);
+    runner(5000);
+    runner(7500);
+    runner(9000);
     
     return 0;
 }
