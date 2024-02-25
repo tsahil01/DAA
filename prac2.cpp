@@ -10,26 +10,63 @@ void printArr(vector <int> arr, int n, string filename){
     outputfile.close();
 }
 
-// Function to perform selection sort and print sorted array to a file
-void selectionSort(vector <int> arr, int n){
-    for(int i = 0; i<n; i++){
-        int mini = i;
-        for(int j= i+1; j<n; j++)
-            if(arr[j]< arr[mini])
-                mini = j;
-        swap(arr[i], arr[mini]);
+// Function to perform Insertion Sort and print sorted array to a file
+void insertionSort(vector <int> arr, int n){
+    for(int i = 1; i < n; i++) {
+        int key = arr[i];
+        int j = i - 1;
+        while(j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key;
     }
-    printArr(arr, n, "selectionSort.txt");
+    printArr(arr, n, "insertionSort.txt");
 }
 
-// Function to perform bubble sort and print sorted array to a file
-void bubbleSort(vector <int> arr, int n){
-    for(int i = 0; i<n-1; i++){
-        for(int j = 0; j< n-1-i; j++)
-            if(arr[j] > arr[j+1])
-                swap(arr[j], arr[j+1]);
+// Function to perform Merge Sort
+void merge(vector<int>& arr, int l, int m, int r) {
+    int n1 = m - l + 1;
+    int n2 = r - m;
+
+    vector<int> L(n1), R(n2);
+
+    for (int i = 0; i < n1; i++)
+        L[i] = arr[l + i];
+    for (int j = 0; j < n2; j++)
+        R[j] = arr[m + 1 + j];
+
+    int i = 0, j = 0, k = l;
+    while (i < n1 && j < n2) {
+        if (L[i] <= R[j]) {
+            arr[k] = L[i];
+            i++;
+        } else {
+            arr[k] = R[j];
+            j++;
+        }
+        k++;
     }
-    printArr(arr, n, "bubbleSort.txt");
+
+    while (i < n1) {
+        arr[k] = L[i];
+        i++;
+        k++;
+    }
+
+    while (j < n2) {
+        arr[k] = R[j];
+        j++;
+        k++;
+    }
+}
+
+void mergeSort(vector<int>& arr, int l, int r) {
+    if (l >= r) return;
+    int m = l + (r - l) / 2;
+    mergeSort(arr, l, m);
+    mergeSort(arr, m + 1, r);
+    merge(arr, l, m, r);
 }
 
 // Function to generate random numbers and store them in a file
@@ -58,18 +95,19 @@ void runner(int num){
     }
     readfile.close();
 
-    // Bubble Sort
+    // Insertion Sort
     startTime = clock();
-    bubbleSort(arr, arr.size());
+    insertionSort(arr, arr.size());
     endTime = clock();
 
     cout<<num;
     totalTime = ((double)(endTime - startTime)) / CLOCKS_PER_SEC;
     cout<<"        "<<totalTime;
     
-    // Selection Sort
+    // Merge Sort
     startTime = clock();
-    selectionSort(arr, arr.size());
+    mergeSort(arr, 0, arr.size() - 1);
+    printArr(arr, arr.size(), "mergeSort.txt");
     endTime = clock();
 
     totalTime = ((double)(endTime - startTime)) / CLOCKS_PER_SEC;
@@ -78,7 +116,7 @@ void runner(int num){
 
 // Main function
 int main(){
-    cout<<"          Bubble Sort         Selection Sort"<<endl;
+    cout<<"          Insertion Sort       Merge Sort"<<endl;
 
     // Running sorting algorithms for different input sizes
     runner(1000);
