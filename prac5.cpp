@@ -15,8 +15,8 @@ bool compareMinWeight(Job a, Job b) {
     return (a.w < b.w);
 }
 bool compareViWi(Job a, Job b) {
-    float x = a.v/a.w;
-    float y= b.v/b.w;
+    double x = (double)a.v / a.w;
+    double y = (double)b.v / b.w;
     return (x > y);
 }
 
