@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <limits.h>
 using namespace std;
 
 struct Edge
@@ -20,62 +21,50 @@ public:
     {
         Edge edge = {src, dest, weight};
         edges.push_back(edge);
+        Edge reverseEdge = {dest, src, weight};
+        edges.push_back(reverseEdge);
     }
 
-    int findParent(int parent[], int i)
-    { 
-        if (parent[i] == i)
-            return i;
-        return findParent(parent, parent[i]);
-    }
-
-    void unionSets(int parent[], int rank[], int x, int y)
+    void primMST()
     {
-        int xRoot = findParent(parent, x);
-        int yRoot = findParent(parent, y);
+        vector<int> key(V, INT_MAX);
+        vector<bool> mstSet(V, false);
+        vector<int> parent(V, -1);
 
-        if (rank[xRoot] < rank[yRoot])
-            parent[xRoot] = yRoot;
-        else if (rank[xRoot] > rank[yRoot])
-            parent[yRoot] = xRoot;
-        else
+        key[0] = 0;
+
+        for (int count = 0; count < V - 1; count++)
         {
-            parent[yRoot] = xRoot;
-            rank[xRoot]++;
-        }
-    }
+            int u = minKey(key, mstSet);
+            mstSet[u] = true;
 
-    void kruskalMST()
-    {
-        sort(edges.begin(), edges.end(), [](Edge a, Edge b)
-             { return a.weight < b.weight; });
-
-        vector<Edge> result;
-        int parent[V], rank[V];
-        for (int i = 0; i < V; i++)
-        {
-            parent[i] = i;
-            rank[i] = 0;
-        }
-
-        int e = 0, i = 0;
-        while (e < V - 1 && i < edges.size())
-        {
-            Edge nextEdge = edges[i++];
-            int x = findParent(parent, nextEdge.src);
-            int y = findParent(parent, nextEdge.dest);
-
-            if (x != y)
+            for (const Edge &edge : edges)
             {
-                result.push_back(nextEdge);
-                unionSets(parent, rank, x, y);
-                e++;
+                if (!mstSet[edge.dest] && edge.src == u && edge.weight < key[edge.dest])
+                {
+                    parent[edge.dest] = u;
+                    key[edge.dest] = edge.weight;
+                }
             }
         }
 
-        cout << "Kruskal's MST:" << endl;
-        for (Edge edge : result)
-            cout << edge.src << " - " << edge.dest << " : " << edge.weight << endl;
+        cout << "\nPrim's MST:" << endl;
+        for (int i = 1; i < V; i++)
+            cout << parent[i] << " - " << i << " : " << key[i] << endl;
+    }
+
+    int minKey(vector<int> &key, vector<bool> &mstSet)
+    {
+        int minIndex, min = INT_MAX;
+        for (int v = 0; v < V; v++)
+        {
+            if (!mstSet[v] && key[v] < min)
+            {
+                min = key[v];
+                minIndex = v;
+            }
+        }
+        return minIndex;
     }
 };
 
@@ -94,26 +83,7 @@ int main()
         graph.addEdge(src, dest, weight);
     }
 
-    graph.kruskalMST();
+    graph.primMST();
 
     return 0;
 }
-
-/* 10 16
-0 1 4
-0 3 1
-1 3 4
-3 7 5
-7 9 2
-3 9 6
-1 9 10
-1 2 4
-9 6 4
-9 8 3
-4 6 2
-4 2 2
-6 8 3
-6 5 3
-2 5 1
-8 5 5
-*/
